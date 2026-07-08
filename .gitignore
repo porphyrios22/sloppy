@@ -1,0 +1,6 @@
+node_modules/
+.env
+client_secret.json
+youtube-token.json
+output/
+.upload-tmp/

@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: youtube-automation-dashboard
+    runtime: docker
+    plan: starter
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: PORT
+        value: 10000
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: POLLINATIONS_API_KEY
+        sync: false
+      - key: NARRATOR_VOICE
+        sync: false
+      - key: NARRATOR_SPEED
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET_JSON
+        sync: false
+      - key: GOOGLE_TOKEN_JSON
+        sync: false
+    disk:
+      name: data
+      mountPath: /app/data
+      sizeGB: 5
