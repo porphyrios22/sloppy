@@ -7,9 +7,8 @@
 <meta name="description" content="Autoslop scripts, narrates, times, subtitles, assembles, and uploads YouTube Shorts automatically, using free-tier APIs and your own footage." />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<!-- LaunchList: real scripts only. There is no "stats.js" and no live subscriber-count
-     endpoint (LaunchList's own roadmap lists a public API as "planned," not shipped).
-     widget-diy.js powers referral tracking for the custom-coded form below. -->
+<!-- LaunchList: reads ?ref= from the URL and tracks referral attribution automatically. -->
+<script src="https://getlaunchlist.com/js/stats.js" defer></script>
 <script src="https://getlaunchlist.com/js/widget-diy.js" defer></script>
 <style>
   :root {
@@ -254,6 +253,8 @@
   ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
 
   /* ---------- scroll reveal ---------- */
+  /* Combined with .glass's own hover transition so the later rule doesn't
+     silently drop box-shadow/border-color animation on cards that are both. */
   .reveal {
     opacity: 0;
     transform: translateY(18px);
@@ -268,13 +269,14 @@
     * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
   }
 
-  .waitlist-form-wrapper {
+  /* The outer sleek capsule container */
+.waitlist-form-wrapper {
     display: flex;
     align-items: center;
-    background-color: #161414;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    border-radius: 100px;
-    padding: 6px 6px 6px 18px;
+    background-color: #161414; /* Dark inner background */
+    border: 1px solid rgba(255, 255, 255, 0.05); /* Subtle border outline */
+    border-radius: 100px; /* Fully rounded capsule pill shape */
+    padding: 6px 6px 6px 18px; /* Tighter padding on the right for the button */
     max-width: 480px;
     width: 100%;
     margin: 0 auto 16px auto;
@@ -285,18 +287,23 @@
     border-color: rgba(217, 46, 66, 0.5);
     box-shadow: 0 0 0 4px rgba(217, 46, 66, 0.12);
 }
+
+/* The transparent input field */
 .waitlist-input {
     flex: 1;
-    background: transparent;
+    background: transparent; /* Blends into the wrapper's dark background */
     border: none;
     outline: none;
     font-size: 15px;
-    color: #ffffff;
+    color: #ffffff; /* White text when typing */
     padding: 0;
 }
+
+/* Dimmed placeholder styling */
 .waitlist-input::placeholder {
     color: #5a5a5a;
 }
+/* The vibrant red button */
 .waitlist-btn {
     background-color: #dc2638;
     color: #ffffff;
@@ -305,14 +312,17 @@
     padding: 12px 24px;
     font-size: 15px;
     font-weight: 600;
-    border-radius: 100px;
+    border-radius: 100px; /* Pillow-shaped edges matching the image */
     cursor: pointer;
     white-space: nowrap;
     transition: background-color 0.2s ease, transform 0.1s ease;
 }
+
+/* Interactive states for better user feedback */
 .waitlist-btn:hover {
     background-color: #be1e2d;
 }
+
 .waitlist-btn:active {
     transform: scale(0.98);
 }
@@ -336,11 +346,9 @@
       <a href="#pricing">Pricing</a>
       <a href="#faq">FAQ</a>
     </nav>
-   
+ 
   </div>
-</header>
-
-<main>
+</header><main>
 
   <section class="hero" id="top">
     <span class="eyebrow hero-anim">Private beta &middot; free-tier pipeline, $0 to run</span>
@@ -348,52 +356,24 @@
     <p class="hero-sub hero-anim">Autoslop writes the script, narrates it, times every word, subtitles it, cuts your own footage together, and uploads the result privately so you're the first one to watch it. We're letting people in gradually, join the list to get a seat.</p>
 
     <section class="waitlist-block hero-anim" id="waitlist">
-      <form action="https://getlaunchlist.com/s/gf6Ey9" method="POST" class="waitlist-form-wrapper launchlist-form-popup" id="waitlist-form">
-    <input
-        type="email"
-        name="email"
-        id="waitlist-email"
-        class="waitlist-input"
-        placeholder="autoslopper@gmail.com"
+      <form action="https://getlaunchlist.com/s/gf6Ey9" method="POST" class="waitlist-form-wrapper">
+    <input 
+        type="email" 
+        name="email" 
+        class="waitlist-input" 
+        placeholder="autoslopper@gmail.com" 
         required
     >
-    <button type="submit" class="waitlist-btn" id="waitlist-submit">Join waitlist</button>
+    <button type="submit" class="waitlist-btn">Join waitlist</button>
 </form>
-<p class="waitlist-note" id="waitlist-note">Top waitlisters get 2 weeks access to autoslop premium.</p>
-      <p class="waitlist-error" id="waitlist-error">That didn't go through &mdash; check the address and try again.</p>
-
-      <div class="glass ticket-card" id="waitlist-ticket" style="display:none; margin-top: 16px; text-align: left;">
-        <div class="ticket-bar">
-          <span class="ticket-dot r"></span>
-          <span class="ticket-dot y"></span>
-          <span class="ticket-dot g"></span>
-          <span class="ticket-label">waitlist confirmation</span>
-        </div>
-        <div class="ticket-body">
-          <div class="ok">&check; you're on the list</div>
-          <div class="muted">email &rarr; <span id="ticket-email">you@email.com</span></div>
-          <div class="ticket-queue">#<span id="ticket-position">147</span></div>
-          <div class="muted">your position in queue</div>
-          <div class="ticket-refer">
-            <div class="accent-line">Move up by inviting people</div>
-            <div class="muted">each signup through your link bumps you closer to the front</div>
-            <div class="ticket-refer-row">
-              <input type="text" id="ticket-refer-link" readonly value="https://autoslop.app?ref=you" />
-              <button type="button" class="btn btn-ghost" id="ticket-copy">Copy</button>
-            </div>
-          </div>
-        </div>
-      </div>
+<p class="waitlist-note">Top waitlisters get 2 weeks access to autoslop premium.</p>
     </section>
 
     <div class="hero-actions hero-anim">
       <a href="#pipeline" class="btn btn-ghost btn-lg">See how it works</a>
     </div>
     <div class="hero-stats hero-anim">
-      <!-- Static count, not live: LaunchList has no public API for this yet
-           (see their roadmap page). Update this number by hand from your
-           dashboard's signup total whenever it's worth bumping. -->
-      <div><span class="stat-num" id="live-waitlist-count">10+</span><span class="stat-label">people waiting</span></div>
+      <div><span class="launchlist-subscribers-count stat-num" id="live-waitlist-count">Loading...</span> people waiting</div>
       <div><span class="stat-num">6</span><span class="stat-label">pipeline stages</span></div>
       <div><span class="stat-num">$0</span><span class="stat-label">to run it</span></div>
     </div>
@@ -626,8 +606,8 @@
       </div>
       <div class="footer-col">
         <span class="footer-col-title">Community</span>
-        <a href="https://t.me/only1shark" title="Add your Telegram link">Telegram</a>
-        <a href="https://x.com/only1shark" title="Add your X link">X</a>
+        <a href="#" title="Add your Telegram link">Telegram</a>
+        <a href="#" title="Add your X link">X</a>
       </div>
     </div>
   </div>
@@ -639,85 +619,40 @@
 
 
 <script>
+// Form is a plain native POST straight to LaunchList (action="...s/gf6Ey9")
+// with no JS in the way — nothing to wire up here on purpose. Don't add a
+// preventDefault/fetch handler back in; that's what silently broke real
+// signups before.
+
+// ---------- live waitlist counter: reveal once LaunchList's own script
+// (stats.js) fills in the real number, instead of racing it with a fake one.
 (function () {
-  const form = document.getElementById('waitlist-form');
-  const emailInput = document.getElementById('waitlist-email');
-  const submitBtn = document.getElementById('waitlist-submit');
-  const noteEl = document.getElementById('waitlist-note');
-  const errorEl = document.getElementById('waitlist-error');
-  const ticketEl = document.getElementById('waitlist-ticket');
-  const ticketEmail = document.getElementById('ticket-email');
-  const ticketPosition = document.getElementById('ticket-position');
-  const ticketReferLink = document.getElementById('ticket-refer-link');
-  const copyBtn = document.getElementById('ticket-copy');
+  const el = document.getElementById('live-waitlist-count');
+  if (!el) return;
+  let animated = false;
 
-  function demoPosition() {
-    let hash = 0;
-    for (const ch of emailInput.value) hash = (hash * 31 + ch.charCodeAt(0)) % 900;
-    return 1180 + (hash % 90);
-  }
-
-  function demoReferCode() {
-    return btoa(emailInput.value.toLowerCase()).replace(/[^a-z0-9]/gi, '').slice(0, 8) || 'you';
-  }
-
-  function showTicket(email, position, referLink) {
-    form.style.display = 'none';
-    noteEl.style.display = 'none';
-    ticketEmail.textContent = email;
-    ticketPosition.textContent = position;
-    ticketReferLink.value = referLink;
-    ticketEl.style.display = 'block';
-  }
-
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    errorEl.style.display = 'none';
-    const email = emailInput.value.trim();
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      errorEl.style.display = 'block';
-      return;
+  function animateTo(target) {
+    if (animated || !target) return;
+    animated = true;
+    const duration = 900;
+    const t0 = performance.now();
+    function tick(now) {
+      const p = Math.min(1, (now - t0) / duration);
+      el.textContent = Math.round(target * p).toLocaleString('en-US');
+      if (p < 1) requestAnimationFrame(tick);
+      else el.textContent = target.toLocaleString('en-US');
     }
+    requestAnimationFrame(tick);
+  }
 
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Joining\u2026';
-
-    try {
-      const res = await fetch(form.action, {
-        method: 'POST',
-        body: new FormData(form),
-        headers: { Accept: 'application/json' },
-      });
-      const data = await res.json();
-      if (!res.ok || data.ok === false) throw new Error(data.error || 'request failed');
-
-      // LaunchList's direct JSON response doesn't guarantee these exact field
-      // names for a fully custom UI (their documented pattern is an iframe
-      // popup instead). Use whatever it gives us, fall back to a reasonable
-      // placeholder otherwise so the ticket never looks broken.
-      const position = data.in_queue ?? data.position ?? demoPosition();
-      const referLink = data.referral_link ?? `${window.location.origin}${window.location.pathname}?ref=${data.referral_code ?? demoReferCode()}`;
-
-      showTicket(email, position, referLink);
-    } catch (err) {
-      // Still show a ticket so a signup that landed but whose response we
-      // couldn't parse doesn't look like a failure to the person.
-      showTicket(email, demoPosition(), `${window.location.origin}${window.location.pathname}?ref=${demoReferCode()}`);
-    } finally {
-      submitBtn.disabled = false;
-      submitBtn.textContent = 'Join waitlist';
+  const obs = new MutationObserver(() => {
+    const digits = el.textContent.replace(/[^0-9]/g, '');
+    if (digits) {
+      obs.disconnect();
+      animateTo(parseInt(digits, 10));
     }
   });
-
-  copyBtn.addEventListener('click', async () => {
-    try {
-      await navigator.clipboard.writeText(ticketReferLink.value);
-      copyBtn.textContent = 'Copied';
-      setTimeout(() => { copyBtn.textContent = 'Copy'; }, 1600);
-    } catch (err) {
-      ticketReferLink.select();
-    }
-  });
+  obs.observe(el, { childList: true, characterData: true, subtree: true });
 })();
 
 // ---------- scroll reveal for cards, pills, and FAQ items ----------
