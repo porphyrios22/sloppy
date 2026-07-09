@@ -582,10 +582,10 @@
       <p class="footer-tagline">Script to upload, on your terms. A $0 pipeline for people who'd rather ship than edit.</p>
       <div class="footer-social">
         <!-- Placeholder social links: swap href="#" for the real Telegram and X URLs -->
-        <a href="#" class="social-btn" aria-label="Telegram" title="Add your Telegram link">
+        <a href="https://t.me/only1shark" class="social-btn" aria-label="Telegram" title="Add your Telegram link">
           <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 3 2 10.5l6.5 2.2L11 20l3-4.5L20 18z"/><path d="M8.5 12.7 19 6"/></svg>
         </a>
-        <a href="#" class="social-btn" aria-label="X (Twitter)" title="Add your X link">
+        <a href="https://x.com/only1shark" class="social-btn" aria-label="X (Twitter)" title="Add your X link">
           <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4l16 16M20 4 4 20"/></svg>
         </a>
       </div>
@@ -616,33 +616,7 @@
   </div>
 </footer>
 <script>
-  /* =========================================================================
-     WAITLIST WIRING — LaunchList "custom form" integration
-     (docs: getlaunchlist.com/help/docs/integrations/html)
-
-     LaunchList doesn't have a general public REST API, but the form's own
-     submit endpoint (the "action" URL below) accepts a normal POST and, if
-     asked for JSON, responds with JSON — so we can submit via fetch and keep
-     our own ticket UI instead of navigating away or using their iframe.
-
-     TO GO LIVE:
-     1) Create a waitlist at getlaunchlist.com, open Integration in the
-        sidebar, and copy your form key (looks like "abcd1234").
-     2) Replace YOUR_FORM_KEY in the form's action= attribute above (in the
-        HTML) with that key. That's the only required step — referral
-        tracking is handled automatically by widget-diy.js in <head> once
-        the key is real, based on ?ref= in the URL.
-     3) Submit the form once for real, open your browser's Network tab, and
-        check what the JSON response actually contains for queue position
-        and referral link — LaunchList's docs don't spell out the exact
-        field names, so confirm them yourself and adjust the two lines
-        marked "CONFIRM AGAINST REAL RESPONSE" below before you rely on them.
-
-     Until the action URL still says YOUR_FORM_KEY, the form runs in DEMO
-     MODE: it fakes a queue position and referral link locally so you can see
-     and screenshot the full flow while designing, without a real key yet.
-     ========================================================================= */
-
+ 
   const form = document.getElementById('waitlist-form');
   const emailInput = document.getElementById('waitlist-email');
   const submitBtn = document.getElementById('waitlist-submit');
