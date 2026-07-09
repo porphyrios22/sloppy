@@ -144,7 +144,7 @@ function splitIntoChunks(text) {
 // -----------------------------------------------------------------------
 // ElevenLabs request with key rotation + 429 failover
 // -----------------------------------------------------------------------
-async function synthesizeChunk({ text, previousText, nextText, voice, speed }) {
+async function synthesizeChunk({ text, previousText, nextText, voice, speed, chunkIndex }) {
   const voiceSettings = {
     stability: DEFAULT_STABILITY,
     similarity_boost: DEFAULT_SIMILARITY,
@@ -160,9 +160,8 @@ async function synthesizeChunk({ text, previousText, nextText, voice, speed }) {
   if (nextText) body.next_text = nextText;
 
   let lastErr;
-  // Try each key at most once per chunk before giving up.
   for (let attempt = 0; attempt < API_KEYS.length; attempt++) {
-    const key = nextKey();
+    const key = keyForAttempt(chunkIndex, attempt);   // <-- was nextKey()
     try {
       const res = await fetch(
         `https://api.elevenlabs.io/v1/text-to-speech/${voice}`,
@@ -191,7 +190,6 @@ async function synthesizeChunk({ text, previousText, nextText, voice, speed }) {
       return Buffer.from(arrayBuffer);
     } catch (err) {
       lastErr = err;
-      // Network errors: also worth trying the next key before failing.
       console.log(`  key ...${key.slice(-4)} failed (${err.message}), trying next key`);
     }
   }
@@ -226,6 +224,7 @@ async function main() {
       nextText,
       voice,
       speed,
+      chunkIndex: i,
     });
     audioBuffers.push(audioBuffer);
     console.log(`  chunk ${i + 1} done (${audioBuffer.length} bytes)`);
@@ -252,3 +251,6 @@ main().catch((err) => {
   console.error("TTS failed:", err.message);
   process.exit(1);
 });
+
+
+
