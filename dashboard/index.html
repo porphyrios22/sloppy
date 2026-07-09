@@ -7,8 +7,9 @@
 <meta name="description" content="Autoslop scripts, narrates, times, subtitles, assembles, and uploads YouTube Shorts automatically, using free-tier APIs and your own footage." />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<!-- LaunchList: reads ?ref= from the URL and tracks referral attribution automatically. -->
-<script src="https://getlaunchlist.com/js/stats.js" defer></script>
+<!-- LaunchList: real scripts only. There is no "stats.js" and no live subscriber-count
+     endpoint (LaunchList's own roadmap lists a public API as "planned," not shipped).
+     widget-diy.js powers referral tracking for the custom-coded form below. -->
 <script src="https://getlaunchlist.com/js/widget-diy.js" defer></script>
 <style>
   :root {
@@ -253,8 +254,6 @@
   ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
 
   /* ---------- scroll reveal ---------- */
-  /* Combined with .glass's own hover transition so the later rule doesn't
-     silently drop box-shadow/border-color animation on cards that are both. */
   .reveal {
     opacity: 0;
     transform: translateY(18px);
@@ -269,14 +268,13 @@
     * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
   }
 
-  /* The outer sleek capsule container */
-.waitlist-form-wrapper {
+  .waitlist-form-wrapper {
     display: flex;
     align-items: center;
-    background-color: #161414; /* Dark inner background */
-    border: 1px solid rgba(255, 255, 255, 0.05); /* Subtle border outline */
-    border-radius: 100px; /* Fully rounded capsule pill shape */
-    padding: 6px 6px 6px 18px; /* Tighter padding on the right for the button */
+    background-color: #161414;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 100px;
+    padding: 6px 6px 6px 18px;
     max-width: 480px;
     width: 100%;
     margin: 0 auto 16px auto;
@@ -287,23 +285,18 @@
     border-color: rgba(217, 46, 66, 0.5);
     box-shadow: 0 0 0 4px rgba(217, 46, 66, 0.12);
 }
-
-/* The transparent input field */
 .waitlist-input {
     flex: 1;
-    background: transparent; /* Blends into the wrapper's dark background */
+    background: transparent;
     border: none;
     outline: none;
     font-size: 15px;
-    color: #ffffff; /* White text when typing */
+    color: #ffffff;
     padding: 0;
 }
-
-/* Dimmed placeholder styling */
 .waitlist-input::placeholder {
     color: #5a5a5a;
 }
-/* The vibrant red button */
 .waitlist-btn {
     background-color: #dc2638;
     color: #ffffff;
@@ -312,17 +305,14 @@
     padding: 12px 24px;
     font-size: 15px;
     font-weight: 600;
-    border-radius: 100px; /* Pillow-shaped edges matching the image */
+    border-radius: 100px;
     cursor: pointer;
     white-space: nowrap;
     transition: background-color 0.2s ease, transform 0.1s ease;
 }
-
-/* Interactive states for better user feedback */
 .waitlist-btn:hover {
     background-color: #be1e2d;
 }
-
 .waitlist-btn:active {
     transform: scale(0.98);
 }
@@ -400,7 +390,10 @@
       <a href="#pipeline" class="btn btn-ghost btn-lg">See how it works</a>
     </div>
     <div class="hero-stats hero-anim">
-      <div><span class="launchlist-subscribers-count stat-num" id="live-waitlist-count">Loading...</span> people waiting</div>
+      <!-- Static count, not live: LaunchList has no public API for this yet
+           (see their roadmap page). Update this number by hand from your
+           dashboard's signup total whenever it's worth bumping. -->
+      <div><span class="stat-num" id="live-waitlist-count">1,240+</span><span class="stat-label">people waiting</span></div>
       <div><span class="stat-num">6</span><span class="stat-label">pipeline stages</span></div>
       <div><span class="stat-num">$0</span><span class="stat-label">to run it</span></div>
     </div>
@@ -723,37 +716,6 @@
       ticketReferLink.select();
     }
   });
-})();
-
-// ---------- live waitlist counter: reveal once LaunchList's own script
-// (stats.js) fills in the real number, instead of racing it with a fake one.
-(function () {
-  const el = document.getElementById('live-waitlist-count');
-  if (!el) return;
-  let animated = false;
-
-  function animateTo(target) {
-    if (animated || !target) return;
-    animated = true;
-    const duration = 900;
-    const t0 = performance.now();
-    function tick(now) {
-      const p = Math.min(1, (now - t0) / duration);
-      el.textContent = Math.round(target * p).toLocaleString('en-US');
-      if (p < 1) requestAnimationFrame(tick);
-      else el.textContent = target.toLocaleString('en-US');
-    }
-    requestAnimationFrame(tick);
-  }
-
-  const obs = new MutationObserver(() => {
-    const digits = el.textContent.replace(/[^0-9]/g, '');
-    if (digits) {
-      obs.disconnect();
-      animateTo(parseInt(digits, 10));
-    }
-  });
-  obs.observe(el, { childList: true, characterData: true, subtree: true });
 })();
 
 // ---------- scroll reveal for cards, pills, and FAQ items ----------
